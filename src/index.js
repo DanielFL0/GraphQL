@@ -14,7 +14,7 @@ import { createServer } from 'http';
 const typeDefinitions = `
     type Query {
         greeting(name: String, position: String): String!
-        add(x: Int!, y: Int!): Int!
+        add(numbers: [Float!]!): Float!
         grades: [Int!]!
         me: User!
         post: Post!
@@ -47,7 +47,13 @@ const resolvers = {
             }
         },
         add(parent, args, ctx, info) {
-            return args.x + args.y;
+            if (args.numbers.length === 0) {
+                return 0;
+            } else {
+                return args.numbers.reduce((idx, cur) => {
+                    return idx + cur;
+                })
+            }
         },
         grades(parent, args, ctx, info) {
             return [99, 80, 93];
