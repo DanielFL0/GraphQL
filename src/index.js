@@ -13,33 +13,35 @@ import { createServer } from 'http';
 // Type definitions (schema)
 const typeDefinitions = `
     type Query {
-        id: ID!
-        name: String!
-        age: Int!
-        online: Boolean!
-        currency: Float!
+        title: String!
+        price: Float!
+        releaseYear: Int
+        rating: Float
+        inStock: Boolean!
     }
 `;
 
 // Resolvers
 const resolvers = {
     Query: {
-        id() {
-            return '1';
+        title() {
+            return 'Gaming PC I7 RTX 4090 64GB RAM';
         },
-        name() {
-            return 'Dosan';
+        price() {
+            return 1299.99;
         },
-        age() {
-            return 24;
+        releaseYear() {
+            return 2023;
         },
-        online() {
+        rating() {
+            return 9.5;
+        },
+        inStock() {
             return true;
-        },
-        currency() {
-            return 1337.0
         }
     }
+
+    
 }
 
 // Schema
