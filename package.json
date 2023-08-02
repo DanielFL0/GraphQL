@@ -4,7 +4,7 @@
   "description": "Code for \"The Modern GraphQL Bootcamp (with Node.js and Apollo)\"",
   "main": "index.js",
   "scripts": {
-    "start": "babel-node src/index.js",
+    "dev": "nodemon src/index.js --exec babel-node",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -26,6 +26,7 @@
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "graphql": "^16.7.1",
-    "graphql-yoga": "^4.0.3"
+    "graphql-yoga": "^4.0.3",
+    "nodemon": "^3.0.1"
   }
 }
