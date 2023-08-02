@@ -13,6 +13,8 @@ import { createServer } from 'http';
 // Type definitions (schema)
 const typeDefinitions = `
     type Query {
+        greeting(name: String, position: String): String!
+        me: User!
         post: Post!
     }
 
@@ -34,6 +36,22 @@ const typeDefinitions = `
 // Resolvers
 const resolvers = {
     Query: {
+        greeting(parent, args, ctx, info) {
+            console.log(args);
+            if (args.name) {
+                return `Hello, ${args.name}! You're my favorite ${args.position}`;
+            } else {
+                return 'Hello!';
+            }
+        },
+        me() {
+            return {
+                id: '1',
+                name: 'Dosan',
+                email: 'josedanielsaldana@gmail.com',
+                age: 24
+            };
+        },
         post() {
             return {
                 id: '1',
