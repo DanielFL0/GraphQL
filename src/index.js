@@ -13,27 +13,31 @@ import { createServer } from 'http';
 // Type definitions (schema)
 const typeDefinitions = `
     type Query {
-        hello: String!
+        id: ID!
         name: String!
-        location: String!
-        bio: String!
+        age: Int!
+        online: Boolean!
+        currency: Float!
     }
 `;
 
 // Resolvers
 const resolvers = {
     Query: {
-        hello() {
-            return 'Hello, World!';
+        id() {
+            return '1';
         },
         name() {
             return 'Dosan';
         },
-        location() {
-            return 'Monterrey, Nuevo Leon';
+        age() {
+            return 24;
         },
-        bio() {
-            return 'Software Engineer @ Softtek | Problem solving';
+        online() {
+            return true;
+        },
+        currency() {
+            return 1337.0
         }
     }
 }
