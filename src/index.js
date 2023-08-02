@@ -13,36 +13,37 @@ import { createServer } from 'http';
 // Type definitions (schema)
 const typeDefinitions = `
     type Query {
+        post: Post!
+    }
+
+    type User {
+        id: ID!
+        name: String!
+        email: String!
+        age: Int
+    }
+
+    type Post {
+        id: ID!
         title: String!
-        price: Float!
-        releaseYear: Int
-        rating: Float
-        inStock: Boolean!
+        body: String!
+        published: Boolean!
     }
 `;
 
 // Resolvers
 const resolvers = {
     Query: {
-        title() {
-            return 'Gaming PC I7 RTX 4090 64GB RAM';
-        },
-        price() {
-            return 1299.99;
-        },
-        releaseYear() {
-            return 2023;
-        },
-        rating() {
-            return 9.5;
-        },
-        inStock() {
-            return true;
+        post() {
+            return {
+                id: '1',
+                title: 'Hacking GraphQL',
+                body: 'Experimental GraphQL',
+                published: true
+            };
         }
     }
-
-    
-}
+};
 
 // Schema
 const schema = createSchema({
