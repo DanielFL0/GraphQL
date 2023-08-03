@@ -1,8 +1,12 @@
-import { v4 as uuidv4 } from 'uuid';
 import { createSchema, createYoga } from 'graphql-yoga';
 import { createServer } from 'http';
 
 import db from './db.js';
+import query from './query.js';
+import mutation from './mutation.js';
+import user from './user.js';
+import post from './post.js';
+import comment from './comment.js';
 
 /*
  * Scalar Types
@@ -68,195 +72,16 @@ const typeDefinitions = `
     }
 `;
 
-// Resolvers
-const resolvers = {
-    Query: {
-        users(parent, args, ctx, info) {
-            if (!args.query) {
-                return ctx.db.users;
-            }
-            return ctx.db.users.filter((user) => {
-                return user.name.toLowerCase().includes(args.query.toLowerCase());
-            });
-        },
-        posts(parent, args, ctx, info) {
-            if (!args.query) {
-                return ctx.db.posts;
-            }
-            return ctx.db.posts.filter((post) => {
-                const isTitleMatch =  post.title.toLowerCase().includes(args.query.toLowerCase());
-                const isBodyMatch =  post.body.toLowerCase().includes(args.query.toLowerCase());
-                return isTitleMatch || isBodyMatch;
-            });
-        },
-        comments(parent, args, ctx, info) {
-            if (!args.query) {
-                return ctx.db.comments;
-            }
-            return ctx.db.comments.filter((comment) => {
-                const isIdMatch = (comment.id === args.query);
-                const isTextMatch = comment.text.toLowerCase().includes(args.query.toLowerCase());
-                return isIdMatch || isTextMatch;
-            })
-        }
-    },
-    Mutation: {
-        createUser(parent, args, ctx, info) {
-            const emailTaken = ctx.db.users.some((user) => {
-                return user.email === args.data.email;
-            });
-            if (emailTaken) {
-                throw new Error('Email taken');
-            }
-            const user = {
-                id: uuidv4(),
-                name: args.data.name,
-                email: args.data.email,
-                age: args.data.age
-                /*
-                 * id: uuidv4(),
-                 * ...args
-                 */
-            };
-            ctx.db.users.push(user);
-            return user;
-        },
-        deleteUser(parent, args, ctx, info) {
-            const userIndex = ctx.db.users.findIndex((user) => {
-                return user.id === args.id;
-            });
-            if (userIndex === -1) {
-                throw new Error('User not found');
-            }
-            const deletedUsers = ctx.db.users.splice(userIndex, 1);
-            posts = ctx.db.posts.filter((post) => {
-                const match = post.author === args.id;
-                if (match) {
-                    comments = comments.filter((comment) => {
-                        return comment.post !== post.id;
-                    });
-                }
-                return !match;
-            });
-            comments = ctx.db.comments.filter((comment) => {
-                return comment.author !== args.id;
-            });
-            return deletedUsers[0];
-        },
-        createPost(parent, args, ctx, info) {
-            const userExists = ctx.db.users.some((user) => { 
-                return user.id === args.data.author;
-            });
-            if (!userExists) {
-                throw new Error('User not found');
-            }
-            const post = {
-                id: uuidv4(),
-                title: args.data.title,
-                body: args.data.body,
-                published: args.data.published,
-                author: args.data.author
-                /*
-                 * id: uuidv4(),
-                 * ...args
-                 */
-            };
-            ctx.db.posts.push(post);
-            return post;
-        },
-        deletePost(parent, args, ctx, info) {
-            const postIndex = ctx.db.posts.findIndex((post) => {
-                return post.id === args.id;
-            });
-            if (postIndex === -1) {
-                throw new Error('Post not found');
-            }
-            const deletedPosts = ctx.db.posts.splice(postIndex, 1);
-            comments = ctx.db.comments.filter((comment) => {
-                const match = comment.post === args.id;
-                return !match;
-            });
-            return deletedPosts[0];
-        },
-        createComment(parent, args, ctx, info) {
-            const userExists = ctx.db.users.some((user) => {
-                return user.id === args.data.author;
-            });
-            const postExists = ctx.db.posts.some((post) => {
-                return post.id === args.data.post && post.published;
-            });
-            if (!userExists) {
-                throw new Error('User not found');
-            }
-            if (!postExists) {
-                throw new Error('Post not found');
-            }
-            const comment = {
-                id: uuidv4(),
-                text: args.data.text,
-                author: args.data.author,
-                post: args.data.post
-                /*
-                 * id: uuidv4(),
-                 * ...args
-                 */
-            };
-            ctx.db.comments.push(comment);
-            return comment;
-        },
-        deleteComment(parent, args, ctx, info) {
-            const commentIndex = ctx.db.comments.findIndex((comment) => {
-                return comment.id === args.id;
-            });
-            if (commentIndex === -1) {
-                throw new Error('Comment not found');
-            }
-            const deletedComments = ctx.db.comments.splice(commentIndex, 1);
-            return deletedComments[0];
-        }
-    },
-    User: {
-        posts(parent, args, ctx, info) {
-            return ctx.db.posts.filter((post) => {
-                return post.author === parent.id;
-            });
-        },
-        comments(parent, args, ctx, info) {
-            return ctx.db.comments.filter((comment) => {
-                return comment.author === parent.id;
-            });
-        }
-    },
-    Post: {
-        author(parent, args, ctx, info) {
-            return ctx.db.users.find((user) => {
-                return user.id === parent.author;
-            });
-        },
-        comments(parent, args, ctx, info) {
-            return ctx.db.comments.filter((comment) => {
-                return comment.post === parent.id;
-            });
-        }
-    },
-    Comment: {
-        author(parent, args, ctx, info) {
-            return ctx.db.users.find((user) => {
-                return user.id === parent.author;
-            });
-        },
-        post(parent, args, ctx, info) {
-            return ctx.db.posts.find((post) => {
-                return post.id === parent.post;
-            });
-        }
-    }
-};
-
 // Schema
 const schema = createSchema({
     typeDefs: typeDefinitions,
-    resolvers: resolvers,
+    resolvers: {
+        Query: query,
+        Mutation: mutation,
+        User: user,
+        Post: post,
+        Comment: comment
+    }
 });
 
 const yoga = createYoga({
