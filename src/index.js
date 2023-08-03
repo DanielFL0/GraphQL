@@ -199,6 +199,10 @@ const resolvers = {
                 name: args.name,
                 email: args.email,
                 age: args.age
+                /*
+                 * id: uuidv4(),
+                 * ...args
+                 */
             };
             users.push(user);
             return user;
@@ -216,6 +220,10 @@ const resolvers = {
                 body: args.body,
                 published: args.published,
                 author: args.author
+                /*
+                 * id: uuidv4(),
+                 * ...args
+                 */
             };
             posts.push(post);
             return post;
@@ -225,7 +233,7 @@ const resolvers = {
                 return user.id === args.author;
             });
             const postExists = posts.some((post) => {
-                return post.id === args.post;
+                return post.id === args.post && post.published;
             });
             if (!userExists) {
                 throw new Error('User not found');
@@ -238,6 +246,10 @@ const resolvers = {
                 text: args.text,
                 author: args.author,
                 post: args.post
+                /*
+                 * id: uuidv4(),
+                 * ...args
+                 */
             };
             comments.push(comment);
             return comment;
