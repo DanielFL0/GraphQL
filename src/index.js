@@ -10,14 +10,36 @@ const users = [
     },
     {
         id: '2',
-        name: 'Dosan',
-        email: 'josedanielsaldana@gmail.com'
+        name: 'Jeb',
+        email: 'jeb@gmail.com'
     },
     {
         id: '3',
-        name: 'Dosan',
-        email: 'josedanielsaldana@gmail.com'
+        name: 'Notch',
+        email: 'notch@gmail.com'
     },
+];
+
+// Demo post data
+const posts = [
+    {
+        id: '1',
+        title: 'Building a GraphQL compiler',
+        body: 'Learn how to lex and parse GraphQL',
+        published: true
+    },
+    {
+        id: '2',
+        title: 'Profiling GraphQL APIs',
+        body: 'Learn how to measure the performance of your GraphQL API',
+        published: true
+    },
+    {
+        id: '3',
+        title: 'Testing GraphQL APIs',
+        body: 'Learn how to test your GraphQL APIs',
+        published: true
+    }
 ];
 
 /*
@@ -35,9 +57,10 @@ const typeDefinitions = `
         greeting(name: String, position: String): String!
         add(numbers: [Float!]!): Float!
         grades: [Int!]!
-        me: User!
-        users: [User!]!
+        user: User!
+        users(query: String!): [User!]!
         post: Post!
+        posts(query: String!): [Post!]!
     }
 
     type User {
@@ -69,33 +92,35 @@ const resolvers = {
         add(parent, args, ctx, info) {
             if (args.numbers.length === 0) {
                 return 0;
-            } else {
-                return args.numbers.reduce((idx, cur) => {
-                    return idx + cur;
-                })
             }
+            return args.numbers.reduce((idx, cur) => {
+                return idx + cur;
+            });
         },
         grades(parent, args, ctx, info) {
             return [99, 80, 93];
         },
-        me() {
-            return {
-                id: '1',
-                name: 'Dosan',
-                email: 'josedanielsaldana@gmail.com',
-                age: 24
-            };
+        user() {
+            return users[0];
         },
         users(parent, args, ctx, info) {
-            return users;
+            if (!args.query) {
+                return users;
+            }
+            return users.filter((user) => {
+                return user.name.toLowerCase().includes(args.query.toLowerCase());
+            });
         },
         post() {
-            return {
-                id: '1',
-                title: 'Hacking GraphQL',
-                body: 'Experimental GraphQL',
-                published: true
-            };
+            return posts[0];
+        },
+        posts(parent, args, ctx, info) {
+            if (!args.query) {
+                return posts;
+            }
+            return posts.filter((post) => {
+                return post.title.toLowerCase().includes(args.query.toLowerCase());
+            });
         }
     }
 };
