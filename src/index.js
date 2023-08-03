@@ -26,19 +26,22 @@ const posts = [
         id: '1',
         title: 'Building a GraphQL compiler',
         body: 'Learn how to lex and parse GraphQL',
-        published: true
+        published: true,
+        author: '1'
     },
     {
         id: '2',
         title: 'Profiling GraphQL APIs',
         body: 'Learn how to measure the performance of your GraphQL API',
-        published: true
+        published: true,
+        author: '1'
     },
     {
         id: '3',
         title: 'Testing GraphQL APIs',
         body: 'Learn how to test your GraphQL APIs',
-        published: true
+        published: true,
+        author: '2'
     }
 ];
 
@@ -58,23 +61,22 @@ const typeDefinitions = `
         add(numbers: [Float!]!): Float!
         grades: [Int!]!
         user: User!
-        users(query: String!): [User!]!
+        users(query: String): [User!]!
         post: Post!
-        posts(query: String!): [Post!]!
+        posts(query: String): [Post!]!
     }
-
     type User {
         id: ID!
         name: String!
         email: String!
         age: Int
     }
-
     type Post {
         id: ID!
         title: String!
         body: String!
         published: Boolean!
+        author: User!
     }
 `;
 
@@ -119,7 +121,16 @@ const resolvers = {
                 return posts;
             }
             return posts.filter((post) => {
-                return post.title.toLowerCase().includes(args.query.toLowerCase());
+                const isTitleMatch =  post.title.toLowerCase().includes(args.query.toLowerCase());
+                const isBodyMatch =  post.body.toLowerCase().includes(args.query.toLowerCase());
+                return isTitleMatch || isBodyMatch;
+            });
+        }
+    },
+    Post: {
+        author(parent, args, ctx, info) {
+            return users.find((user) => {
+                return user.id === parent.author
             });
         }
     }
