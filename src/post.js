@@ -1,0 +1,14 @@
+const post = {
+    author(parent, args, ctx, info) {
+        return ctx.db.users.find((user) => {
+            return user.id === parent.author;
+        });
+    },
+    comments(parent, args, ctx, info) {
+        return ctx.db.comments.filter((comment) => {
+            return comment.post === parent.id;
+        });
+    }
+};
+
+export { post as default };
