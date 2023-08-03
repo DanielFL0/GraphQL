@@ -1,6 +1,25 @@
 import { createSchema, createYoga } from 'graphql-yoga';
 import { createServer } from 'http';
 
+// Demo user data
+const users = [
+    {
+        id: '1',
+        name: 'Dosan',
+        email: 'josedanielsaldana@gmail.com'
+    },
+    {
+        id: '2',
+        name: 'Dosan',
+        email: 'josedanielsaldana@gmail.com'
+    },
+    {
+        id: '3',
+        name: 'Dosan',
+        email: 'josedanielsaldana@gmail.com'
+    },
+];
+
 /*
  * Scalar Types
  * String
@@ -17,6 +36,7 @@ const typeDefinitions = `
         add(numbers: [Float!]!): Float!
         grades: [Int!]!
         me: User!
+        users: [User!]!
         post: Post!
     }
 
@@ -65,6 +85,9 @@ const resolvers = {
                 email: 'josedanielsaldana@gmail.com',
                 age: 24
             };
+        },
+        users(parent, args, ctx, info) {
+            return users;
         },
         post() {
             return {
