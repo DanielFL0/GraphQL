@@ -21,6 +21,30 @@ const mutation = {
         ctx.db.users.push(user);
         return user;
     },
+    updateUser(parent, args, ctx, info) {
+        const user = ctx.db.users.find((user) => {
+            return user.id === args.id;
+        });
+        if (!user) {
+            throw new Error('User not found');
+        }
+        if (typeof args.data.email === 'string') {
+            const emailTaken = ctx.db.users.some((user) => {
+                return user.email === args.data.email;
+            });
+            if (emailTaken) {
+                throw new Error('Email taken');
+            }
+            user.email = args.data.email;
+        }
+        if (typeof args.data.name === 'string') {
+            user.name = args.data.name;
+        }
+        if (typeof args.data.age !== 'undefined') {
+            user.age = args.data.age;
+        }
+        return user;
+    },
     deleteUser(parent, args, ctx, info) {
         const userIndex = ctx.db.users.findIndex((user) => {
             return user.id === args.id;
@@ -64,6 +88,24 @@ const mutation = {
         ctx.db.posts.push(post);
         return post;
     },
+    updatePost(parent, args, ctx, info) {
+        const post = ctx.db.posts.find((post) => {
+            return post.id === args.id;
+        });
+        if (!post) {
+            throw new Error('Post not found');
+        }
+        if (typeof args.data.title === 'string') {
+            post.title = args.data.title;
+        }
+        if (typeof args.data.body === 'string') {
+            post.body = args.data.body;
+        }
+        if (typeof args.data.published === 'boolean') {
+            post.published = args.data.published;
+        }
+        return post;
+    },
     deletePost(parent, args, ctx, info) {
         const postIndex = ctx.db.posts.findIndex((post) => {
             return post.id === args.id;
@@ -102,6 +144,18 @@ const mutation = {
              */
         };
         ctx.db.comments.push(comment);
+        return comment;
+    },
+    updateComment(parent, args, ctx, info) {
+        const comment = ctx.db.comments.find((comment) => {
+            return comment.id === args.id;
+        });
+        if (!comment) {
+            throw new Error('Comment not found');
+        }
+        if (typeof args.data.text === 'string') {
+            comment.text = args.data.text;
+        }
         return comment;
     },
     deleteComment(parent, args, ctx, info) {
