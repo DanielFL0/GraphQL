@@ -86,6 +86,9 @@ const mutation = {
              */
         };
         ctx.db.posts.push(post);
+        if (args.data.published) {
+            ctx.pubsub.publish('post', post);
+        }
         return post;
     },
     updatePost(parent, args, ctx, info) {
@@ -144,6 +147,7 @@ const mutation = {
              */
         };
         ctx.db.comments.push(comment);
+        ctx.pubsub.publish(`comment ${args.data.post}`, comment);
         return comment;
     },
     updateComment(parent, args, ctx, info) {
