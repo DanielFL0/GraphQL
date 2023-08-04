@@ -1,9 +1,10 @@
-import { createSchema, createYoga } from 'graphql-yoga';
+import { createSchema, createPubSub, createYoga } from 'graphql-yoga';
 import { createServer } from 'http';
 
 import db from './db.js';
 import query from './query.js';
 import mutation from './mutation.js';
+import subscription from './subscription.js';
 import user from './user.js';
 import post from './post.js';
 import comment from './comment.js';
@@ -34,6 +35,10 @@ const typeDefinitions = `
         createComment(data: CreateCommentInput): Comment!
         updateComment(id: ID!, data: UpdateCommentInput): Comment!
         deleteComment(id: ID!): Comment!
+    }
+    type Subscription {
+        post: Post!
+        comment(id: ID!): Comment!
     }
     input CreateUserInput {
         name: String!
@@ -91,12 +96,15 @@ const typeDefinitions = `
     }
 `;
 
+const pubsub = createPubSub();
+
 // Schema
 const schema = createSchema({
     typeDefs: typeDefinitions,
     resolvers: {
         Query: query,
         Mutation: mutation,
+        Subscription: subscription,
         User: user,
         Post: post,
         Comment: comment
@@ -106,7 +114,8 @@ const schema = createSchema({
 const yoga = createYoga({
     schema: schema,
     context: {
-        db: db
+        db: db,
+        pubsub: pubsub
     }
 });
 
