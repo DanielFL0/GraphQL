@@ -1,33 +1,9 @@
 {
-  "name": "graphql",
-  "version": "1.0.0",
-  "description": "Code for \"The Modern GraphQL Bootcamp (with Node.js and Apollo)\"",
-  "main": "index.js",
-  "scripts": {
-    "dev": "nodemon src/index.js --ext js, graphql --exec babel-node",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/DanielFL0/GraphQL.git"
-  },
-  "keywords": [
-    "GraphQL",
-    "Javascript"
-  ],
-  "author": "",
-  "license": "GPL-3.0",
-  "bugs": {
-    "url": "https://github.com/DanielFL0/GraphQL/issues"
-  },
-  "homepage": "https://github.com/DanielFL0/GraphQL#readme",
+  "name": "graphql-server",
+  "private": true,
+  "type": "module",
   "dependencies": {
-    "@graphql-tools/schema": "^10.0.0",
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "graphql": "^16.7.1",
-    "graphql-yoga": "^4.0.3",
-    "nodemon": "^3.0.1",
-    "uuid": "^9.0.0"
+    "@apollo/server": "^4.9.1",
+    "graphql": "^16.7.1"
   }
 }
